@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id           String       @id @default(uuid())
+  title        String
+  fileName     String
+  content      String
+  imageUrl     String?
+  documentType DocumentType
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  entities     Entity[]     @relation("DocumentEntities")
+
+  @@map("documents")
+}
+
+model Entity {
+  id        String     @id @default(uuid())
+  name      String
+  date      String?
+  type      EntityType
+  documents Document[] @relation("DocumentEntities")
+
+  @@map("entities")
+}
+
+enum DocumentType {
+  letter
+  report
+  photo
+  newspaper
+  list
+  diary_entry
+  book
+  map
+  biography
+}
+
+enum EntityType {
+  person
+  location
+  organization
+  event
+  date
+  unit
+}
